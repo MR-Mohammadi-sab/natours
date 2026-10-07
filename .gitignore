@@ -3,3 +3,5 @@ node_modules/
 .env
 .cache/
 public/tour.html
+/src/public/js/bundle.js
+/src/public/js/bundle.js.map
