@@ -31,3 +31,22 @@ process.on('unhandledRejection', (err) => {
   console.log(`${err.name}  ${err.message}`);
   server.close(() => process.exit(1));
 });
+
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM RECEIVED. Shutting down gracefully...');
+
+  server.close(async () => {
+    console.log('💥 Process terminated! Express server closed.');
+
+    try {
+      if (mongoose.connection.readyState === 1) {
+        await mongoose.connection.close();
+        console.log('📦 MongoDB connection closed safely.');
+      }
+    } catch (err) {
+      console.error('Error while closing MongoDB connection:', err);
+    }
+
+    process.exit(0);
+  });
+});
