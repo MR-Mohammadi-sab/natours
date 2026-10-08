@@ -4,6 +4,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('@exortek/express-mongo-sanitize');
+const compression = require('compression');
 const hpp = require('hpp');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -12,6 +13,7 @@ const globalError = require('./controllers/errorController');
 
 const app = express();
 
+app.use(compression());
 app.use(
   helmet({
     contentSecurityPolicy: {
