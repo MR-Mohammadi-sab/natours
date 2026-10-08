@@ -27,27 +27,56 @@ function handleTokenExpiredError() {
   return new AppError('Your token has expired! please log in again.', 401);
 }
 
-function setErrorProd(err, res) {
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-  } else {
-    // console.error('Error ', err);
-
-    res.status(500).json({
+const sendErrorProd = (err, res, req) => {
+  // A) API
+  if (req.originalUrl.startsWith('/api')) {
+    // A) Operational, trusted error: send message to client
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+    // B) Programming or other unknown error: don't leak error details
+    // 1) Log error
+    console.error('ERROR 💥', err);
+    // 2) Send generic message
+    return res.status(500).json({
       status: 'error',
-      message: 'something went wrong !',
+      message: 'Something went very wrong!',
     });
   }
-}
-function setErrorDev(err, res) {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack,
+
+  // B) RENDERED WEBSITE
+  // A) Operational, trusted error: send message to client
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: err.message,
+    });
+  }
+  // B) Programming or other unknown error: don't leak error details
+  // 1) Log error
+  console.error('ERROR 💥', err);
+  // 2) Send generic message
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: 'Please try again later.',
+  });
+};
+function setErrorDev(err, res, req) {
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack,
+    });
+  }
+  console.error('ERROR 💥', err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: err.message,
   });
 }
 
@@ -58,7 +87,7 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    setErrorDev(err, res);
+    setErrorDev(err, res, req);
   } else if (process.env.NODE_ENV === 'production') {
     let error = err;
     // invalid params or mongo id
@@ -69,6 +98,6 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'JsonWebTokenError') error = handleJsonWebTokenError();
     if (error.name === 'TokenExpiredError') error = handleTokenExpiredError();
 
-    setErrorProd(error, res);
+    sendErrorProd(error, res, req);
   }
 };

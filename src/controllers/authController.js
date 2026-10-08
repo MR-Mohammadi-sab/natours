@@ -33,7 +33,6 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm,
     role,
   });
-  console.log(newUser);
 
   const token = signToken(newUser._id);
   const url = `${req.protocol}://${req.get('host')}/me`;
@@ -74,11 +73,7 @@ exports.sendVerificationOTP = catchAsync(async (req, res, next) => {
   try {
     const otp = user.createOTP();
     await user.save({ validateBeforeSave: false });
-    await sendEmail({
-      email: user.email,
-      subject: 'Verify email',
-      message: otp,
-    });
+    await new Email().sendOTP(user, otp);
 
     res.status(200).json({
       status: 'success',
@@ -130,7 +125,6 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   const user = await User.findOne({ email }).select('+password');
-  console.log(user);
 
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError('Incorrect password or email!', 401));

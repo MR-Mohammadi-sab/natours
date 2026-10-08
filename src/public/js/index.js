@@ -61,8 +61,6 @@ if (userPasswordForm)
     document.getElementById('password-confirm').value = '';
   });
 
-console.log(bookBtn);
-
 if (bookBtn) {
   bookBtn.addEventListener('click', (e) => {
     e.target.textContent = 'processing...';

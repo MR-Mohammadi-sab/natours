@@ -17,5 +17,4 @@ export async function bookTOur(tourId) {
     console.log('err', err);
     showAlert('error', err);
   }
-  console.log(session);
 }

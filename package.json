@@ -8,7 +8,7 @@
     "start:prod": "cross-env NODE_ENV=production nodemon src/server.js",
     "debug": "ndb src/server.js",
     "watch:js": "parcel watch ./src/public/js/index.js --out-dir ./src/public/js --out-file bundle.js",
-    "build:js": "parcel watch ./src/public/js/index.js --out-dir ./src/public/js --out-file bundle.js"
+    "build:js": "parcel build ./src/public/js/index.js --out-dir ./src/public/js --out-file bundle.js"
   },
   "keywords": [],
   "author": "Mohammad Asif",
@@ -18,6 +18,7 @@
     "@exortek/express-mongo-sanitize": "^3.0.1",
     "axios": "^1.20.0",
     "bcryptjs": "^3.0.3",
+    "compression": "^1.8.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",

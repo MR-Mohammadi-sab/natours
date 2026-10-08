@@ -5,3 +5,4 @@ node_modules/
 public/tour.html
 /src/public/js/bundle.js
 /src/public/js/bundle.js.map
+.cache/
