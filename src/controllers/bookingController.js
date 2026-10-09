@@ -21,6 +21,10 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     cancel_url: `${req.protocol}://${req.get('host')}/tours${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
+    metadata: {
+      tourId: tour.id,
+      userId: req.user.id,
+    },
     line_items: [
       {
         price_data: {
@@ -67,6 +71,37 @@ exports.createCheckoutBooking = catchAsync(async (req, res, next) => {
   await Booking.create({ price, tour, user });
   return res.redirect(req.originalUrl.split('?')[0]);
 });
+
+// exports.webhookCheckout = async (req, res, next) => {
+//   const signature = req.headers['stripe-signature'];
+
+//   let event;
+
+//   try {
+//     event = stripe.webhooks.constructEvent(
+//       req.body,
+//       signature,
+//       process.env.STRIPE_WEBHOOK_SECRET,
+//     );
+//   } catch (err) {
+//     console.log('Webhook error:', err.message);
+//     return res.status(400).send(`Webhook Error: ${err.message}`);
+//   }
+
+//   if (event.type === 'checkout.session.completed') {
+//     const session = event.data.object;
+
+//     const { tourId, userId } = session.metadata;
+
+//     await Booking.create({
+//       tour: tourId,
+//       user: userId,
+//       price: session.amount_total / 100,
+//     });
+//   }
+
+//   res.status(200).json({ received: true });
+// };
 
 exports.getAllBookings = getAll(Booking, 'bookings');
 exports.getBooking = getOne(Booking, null, 'booking');
