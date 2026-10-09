@@ -74,6 +74,7 @@ const limiter = rateLimit({
   limit: 100,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this api. Please try again an hour later!',
+  validate: { trustProxy: false },
 });
 
 app.use('/api', limiter);
