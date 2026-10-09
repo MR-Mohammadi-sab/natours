@@ -16,7 +16,8 @@ const bookBtn = document.querySelector('#book_tour');
 // DELEGATION
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.locations);
-  displayMap(locations);
+  const token = mapBox.dataset.token;
+  displayMap(locations, token);
 }
 
 if (loginForm)
