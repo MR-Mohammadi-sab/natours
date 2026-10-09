@@ -22,43 +22,50 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-
         scriptSrc: [
           "'self'",
           'https://api.mapbox.com',
           'https://js.stripe.com',
+          'https://*.stripe.com',
+          'blob:', // برای لود شدن درست اسکریپت‌های مپ‌باکس
         ],
         frameSrc: [
           "'self'",
           'https://js.stripe.com',
           'https://hooks.stripe.com',
+          'https://*.stripe.com',
         ],
-
         styleSrc: [
           "'self'",
           "'unsafe-inline'",
           'https://api.mapbox.com',
           'https://fonts.googleapis.com',
         ],
-
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-
-        imgSrc: ["'self'", 'data:', 'blob:', 'https://*.mapbox.com'],
-
+        imgSrc: [
+          "'self'",
+          'data:',
+          'blob:',
+          'https://*.mapbox.com',
+          'https://*.stripe.com',
+        ],
         connectSrc: [
           "'self'",
-          'http://127.0.0.1:8000',
+          'blob:',
+          'https://*.natours-1-h0tv.onrender.com', // آدرس سرور رندر شما
+          'https://onrender.com', // آدرس بدون ساب‌دومین
           'https://api.mapbox.com',
           'https://events.mapbox.com',
           'https://js.stripe.com',
-          'ws://127.0.0.1:*',
+          'https://*.stripe.com',
         ],
-
         workerSrc: ["'self'", 'blob:'],
+        upgradeInsecureRequests: [], // از تبدیل خودکار برخی لینک‌ها جلوگیری می‌کند
       },
     },
   }),
 );
+
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 const limiter = rateLimit({
