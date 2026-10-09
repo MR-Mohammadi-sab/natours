@@ -19,12 +19,12 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     allowed_payment_method_types: ['card'],
     // success_url: `${req.protocol}://${req.get('host')}/?user=${req.user.id}&tour=${tour.id}&price=${tour.price}`,
     success_url: `${req.protocol}://${req.get('host')}/my-tours`,
-    cancel_url: `${req.protocol}://${req.get('host')}/tours${tour.slug}`,
+    cancel_url: `${req.protocol}://${req.get('host')}/tours/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
     metadata: {
-      tourId: tour.id,
-      userId: req.user.id,
+      tourId: tour.id.toString(),
+      userId: req.user.id.toString(),
     },
     line_items: [
       {
@@ -88,7 +88,6 @@ exports.webhookCheckout = async (req, res, next) => {
     console.log('Webhook error:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
-
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
