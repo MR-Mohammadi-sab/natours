@@ -73,9 +73,38 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 //   return res.redirect(req.originalUrl.split('?')[0]);
 // });
 
+// exports.webhookCheckout = async (req, res, next) => {
+//   const signature = req.headers['stripe-signature'];
+
+//   let event;
+
+//   try {
+//     event = stripe.webhooks.constructEvent(
+//       req.body,
+//       signature,
+//       process.env.STRIPE_WEBHOOK_SECRET,
+//     );
+//   } catch (err) {
+//     console.log('Webhook error:', err.message);
+//     return res.status(400).send(`Webhook Error: ${err.message}`);
+//   }
+//   if (event.type === 'checkout.session.completed') {
+//     const session = event.data.object;
+
+//     const { tourId, userId } = session.metadata;
+
+//     await Booking.create({
+//       tour: tourId,
+//       user: userId,
+//       price: session.amount_total / 100,
+//     });
+//   }
+
+//   res.status(200).json({ received: true });
+// };
+
 exports.webhookCheckout = async (req, res, next) => {
   const signature = req.headers['stripe-signature'];
-
   let event;
 
   try {
@@ -85,19 +114,33 @@ exports.webhookCheckout = async (req, res, next) => {
       process.env.STRIPE_WEBHOOK_SECRET,
     );
   } catch (err) {
-    console.log('Webhook error:', err.message);
+    console.log('❌ Webhook Signature Error:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
+
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
-    const { tourId, userId } = session.metadata;
+    // ۱. لاگ کردن متادیتا برای اطمینان از رسیدن اطلاعات
+    console.log('📦 Webhook Metadata Received:', session.metadata);
 
-    await Booking.create({
-      tour: tourId,
-      user: userId,
-      price: session.amount_total / 100,
-    });
+    const { tourId, userId } = session.metadata;
+    const price = (session.amount_total || session.amount_subtotal) / 100;
+
+    try {
+      // ۲. تلاش برای ساخت رزرو در دیتابیس همراه با لاگ خطا
+      const newBooking = await Booking.create({
+        tour: tourId,
+        user: userId,
+        price: price,
+      });
+      console.log(
+        '✅ Booking successfully created in Database:',
+        newBooking._id,
+      );
+    } catch (dbErr) {
+      console.log('❌ MongoDB Booking Creation Error:', dbErr.message);
+    }
   }
 
   res.status(200).json({ received: true });
