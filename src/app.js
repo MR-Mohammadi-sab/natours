@@ -11,6 +11,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const AppError = require('./utils/appError');
 const globalError = require('./controllers/errorController');
+const { webhookCheckout } = require('./controllers/bookingController');
 
 const app = express();
 
@@ -68,6 +69,11 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
+app.post(
+  'webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhookCheckout,
+);
 app.use(express.json({ limit: '10kb' }));
 
 app.use(cookieParser());
