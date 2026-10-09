@@ -14,7 +14,7 @@ const globalError = require('./controllers/errorController');
 const { webhookCheckout } = require('./controllers/bookingController');
 
 const app = express();
-app.enable('trust proxy');
+app.enable('trust proxy', 1);
 app.use(cors());
 app.use(compression());
 app.use(
