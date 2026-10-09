@@ -49,11 +49,13 @@ app.use(
           'https://*.mapbox.com',
           'https://*.stripe.com',
         ],
+
         connectSrc: [
           "'self'",
           'blob:',
-          'https://*.natours-1-h0tv.onrender.com', // آدرس سرور رندر شما
-          'https://onrender.com', // آدرس بدون ساب‌دومین
+          'https://*.natours-1-h0tv.onrender.com',
+          'https://natours-1-h0tv.onrender.com',
+          'wss://natours-1-h0tv.onrender.com:*', // اجازه به تمام وب‌ سوکت‌ های سرور رندر
           'https://api.mapbox.com',
           'https://events.mapbox.com',
           'https://js.stripe.com',
