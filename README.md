@@ -1,43 +1,51 @@
 # 🏔️ Natours - Full-Stack Nature Tours Booking Application
 
-Natours is a premium, fully-functional full-stack web application designed for a fictional nature tourism and adventure booking agency. This production-ready platform features a robust RESTful API, advanced data modeling, secure authentication, live payments, and dynamic server-side rendering.
+**Natours** is a full-stack web application built for a fictional nature tourism and adventure booking agency. This production-ready platform features a robust RESTful API, advanced data modeling, secure authentication, live Stripe payments, and dynamic server-side rendering.
+
+🌐 **Live Demo:** [https://natours-1-h0tv.onrender.com/](https://natours-1-h0tv.onrender.com/)  
+_(Note: Because the app is hosted on Render's free tier, the server may take 30–50 seconds to wake up on the first visit.)_
+
+---
+
+![Natours](./src/public/img/preview.png)
 
 ## 🚀 Key Features
 
 - **Authentication & Security:**
-  - Full sign-up, login, logout, password reset, and update capabilities.
+  - Full sign-up, login, logout, password reset, and profile update capabilities.
   - Secure authentication via JSON Web Tokens (JWT) stored in HTTP-only cookies.
-  - Data sanitization against NoSQL injection and XSS attacks.
-  - Rate limiting, HTTP parameter pollution prevention, and secure headers (Helmet).
+  - Data sanitization against NoSQL injection and Cross-Site Scripting (XSS) attacks.
+  - Rate limiting, HTTP parameter pollution prevention, and secure HTTP headers (Helmet).
 - **Tour Management:**
-  - Advanced filtering, sorting, limiting, and pagination capabilities.
+  - Advanced API filtering, sorting, field limiting, and pagination.
   - Geospatial queries to find tours within a specific distance or radius.
-  - Dynamic map rendering using Mapbox.
+  - Interactive map rendering using Mapbox.
 - **Booking & Payments:**
-  - Real-time credit card processing using **Stripe Integration**.
-  - Automatic creation of booking documents upon successful checkout.
+  - Real-time credit card checkout using **Stripe**.
+  - Automatic creation of booking records upon successful payment via Stripe Webhooks.
 - **Reviews & Ratings:**
-  - Dynamic, interactive review and rating system.
-  - Real-time calculation of average ratings and number of ratings for each tour.
+  - Interactive review and rating system for booked tours.
+  - Real-time calculation of average ratings and total rating counts using Mongoose aggregation pipelines.
 - **User Dashboard:**
-  - Personalized profiles where users can update details, change passwords, and view booked tours.
+  - Personalized account area where users can update their details, upload a profile photo, change passwords, and view their booked tours.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** HTML5, CSS3, Sass (SCSS), JavaScript (ES6+), **Pug Templates** (Server-Side Rendering)
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+), **Pug Templates** (Server-Side Rendering)
 - **Backend:** Node.js, Express.js
-- **Database:** MongoDB, Mongoose (Advanced aggregation pipelines, data validation, geospatial indexes)
+- **Database:** MongoDB, Mongoose
 - **Payments:** Stripe API
 - **Maps:** Mapbox API
-- **Email:** Mailtrap (Development) / SendGrid (Production)
+- **Email:** Mailtrap (Development) / SendGrid or Brevo (Production)
+- **Deployment:** Render
 
 ---
 
 ## ⚙️ Environment Variables Setup
 
-To run this project locally, create a `config.env` (or `.env`) file in your root directory and add the following configurations:
+To run this project locally, create a `config.env` file in the root directory and add the following variables:
 
 ```env
 NODE_ENV=development
@@ -67,7 +75,7 @@ STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 
 ```bash
 git clone https://github.com
-cd natours
+cd YOUR_REPO_NAME
 ```
 
 ### 2. Install dependencies
@@ -78,13 +86,13 @@ npm install
 
 ### 3. Import Development Data (Optional)
 
-If you have a JSON file with sample tours/users data and want to seed your database:
+If you want to populate your database with the sample tours, users, and reviews:
 
 ```bash
-# To import data:
+# To import sample data:
 node dev-data/data/import-dev-data.js --import
 
-# To delete data:
+# To delete all data:
 node dev-data/data/import-dev-data.js --delete
 ```
 
@@ -98,9 +106,13 @@ npm run start:dev
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the app in action!
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
 ---
+
+## 🙏 Acknowledgments
+
+- Built as part of **Jonas Schmedtmann's** _Node.js, Express, MongoDB & More: The Complete Bootcamp_ course, with custom deployment and enhancements.
 
 ## 📄 License
 
