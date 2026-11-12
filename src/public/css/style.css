@@ -850,7 +850,8 @@ body {
   color: #55c57a;
 }
 .footer__copyright {
-  justify-self: end;
+  text-align: center;
+  /* justify-self: end; */
   color: #999;
 }
 @media only screen and (max-width: 50em) {
